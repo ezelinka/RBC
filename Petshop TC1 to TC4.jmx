@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="3.2" jmeter="3.3 r1808647">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan - TC1 to TC4" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1516284401000</longProp>
+        <longProp name="ThreadGroup.end_time">1516284401000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig guiclass="com.googlecode.jmeter.plugins.webdriver.config.gui.ChromeDriverConfigGui" testclass="com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig" testname="jp@gc - Chrome Driver Config" enabled="true">
+          <stringProp name="WebDriverConfig.proxy_type">SYSTEM</stringProp>
+          <stringProp name="WebDriverConfig.proxy_pac_url"></stringProp>
+          <stringProp name="WebDriverConfig.http_host"></stringProp>
+          <intProp name="WebDriverConfig.http_port">8080</intProp>
+          <boolProp name="WebDriverConfig.use_http_for_all_protocols">true</boolProp>
+          <stringProp name="WebDriverConfig.https_host"></stringProp>
+          <intProp name="WebDriverConfig.https_port">8080</intProp>
+          <stringProp name="WebDriverConfig.ftp_host"></stringProp>
+          <intProp name="WebDriverConfig.ftp_port">8080</intProp>
+          <stringProp name="WebDriverConfig.socks_host"></stringProp>
+          <intProp name="WebDriverConfig.socks_port">8080</intProp>
+          <stringProp name="WebDriverConfig.no_proxy">localhost</stringProp>
+          <boolProp name="WebDriverConfig.maximize_browser">true</boolProp>
+          <boolProp name="WebDriverConfig.reset_per_iteration">false</boolProp>
+          <boolProp name="WebDriverConfig.dev_mode">false</boolProp>
+          <stringProp name="ChromeDriverConfig.chromedriver_path">d:\Profiles\ezelinka\Desktop\apache-jmeter-3.3\chromedriver.exe</stringProp>
+          <boolProp name="ChromeDriverConfig.android_enabled">false</boolProp>
+          <boolProp name="ChromeDriverConfig.headless_enabled">false</boolProp>
+        </com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig>
+        <hashTree/>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="TC1 - Displayed date" enabled="true">
+          <stringProp name="TestPlan.comments">Check if date banner is displayed and in showing the correct value</stringProp>
+          <stringProp name="WebDriverSampler.script">import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+WDS.sampleResult.sampleStart();
+//Loading the webpage
+WDS.browser.get(&quot;https://qa-petstore.herokuapp.com/&quot;);
+WebDriverWait wait = new WebDriverWait(WDS.browser, 5);
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(&quot;thead.thead-default&quot;)));
+//TBD: Catch the Exception on failed startup/loading
+
+String dateBanner = WDS.browser.findElement(By.xpath(&quot;//span[@class=&apos;banner-date&apos;]&quot;)).findElement(By.tagName(&quot;div&quot;)).getText();
+//TBD: Catch the NoSuchElementException
+//TBD: convert the displayed date to same format as generated from Jmeter
+String dateToCompare = LocalDateTime.now().format(DateTimeFormatter.ofPattern(&quot;dd-MM-yyyy&quot;));
+WDS.log.info(&quot;TC RESULT: Is the date banner displaying actual date? &quot; + dateBanner.equals(dateToCompare).toString());
+
+WDS.sampleResult.successful = dateBanner.equals(dateToCompare);
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">java</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="TC2 - Adding the pet" enabled="true">
+          <stringProp name="TestPlan.comments">Check the action of adding the pet is working</stringProp>
+          <stringProp name="WebDriverSampler.script">import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+WDS.sampleResult.sampleStart();
+//TC result definition
+Boolean TCresult = false;
+//Loading the webpage
+WDS.browser.get(&quot;https://qa-petstore.herokuapp.com/&quot;);
+WebDriverWait wait = new WebDriverWait(WDS.browser, 5);
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(&quot;thead.thead-default&quot;)));
+//TBD: Catch the Exception on failed startup/loading
+
+WebElement petNameField = WDS.browser.findElement(By.className(&quot;pet-name&quot;));
+WebElement petStatusField = WDS.browser.findElement(By.className(&quot;pet-status&quot;));
+WebElement createPetBtn = WDS.browser.findElement(By.id(&quot;btn-create&quot;));
+//TBD: Catch the NoSuchElementException
+
+petNameField.click();
+petNameField.sendKeys(new String[]{&quot;Robo&quot;});
+petStatusField.click();
+petStatusField.sendKeys(new String[]{&quot;Available&quot;});
+createPetBtn.click();
+Thread.sleep(1000);
+
+WebElement createdPetRobo = WDS.browser.findElement(By.xpath(&quot;//input[@value=&apos;Robo&apos;]&quot;));
+//TBD: Catch the NoSuchElementException
+WDS.log.info(&quot;TC STEP: Was the pet1 created? &quot; + createdPetRobo.isEnabled());
+
+//TC: TAB movement testing
+petNameField.click();
+petNameField.sendKeys(new String[]{&quot;Bobo&quot;});
+Robot rob = new Robot();
+//move to petStatus
+rob.keyPress(KeyEvent.VK_TAB);
+rob.keyRelease(KeyEvent.VK_TAB);
+rob.keyPress(KeyEvent.VK_O);
+rob.keyRelease(KeyEvent.VK_O);
+//move to petName
+rob.keyPress(KeyEvent.VK_SHIFT);
+rob.keyPress(KeyEvent.VK_TAB);
+rob.keyRelease(KeyEvent.VK_TAB);
+rob.keyRelease(KeyEvent.VK_SHIFT);
+//move to petStatus
+rob.keyPress(KeyEvent.VK_TAB);
+rob.keyRelease(KeyEvent.VK_TAB);
+//move to createBtn
+rob.keyPress(KeyEvent.VK_TAB);
+rob.keyRelease(KeyEvent.VK_TAB);
+//move to petStatus
+rob.keyPress(KeyEvent.VK_SHIFT);
+rob.keyPress(KeyEvent.VK_TAB);
+rob.keyRelease(KeyEvent.VK_TAB);
+rob.keyRelease(KeyEvent.VK_SHIFT);
+//hit enter
+rob.keyPress(KeyEvent.VK_ENTER);
+rob.keyRelease(KeyEvent.VK_ENTER);
+Thread.sleep(1000);
+createdPetRobo = WDS.browser.findElement(By.xpath(&quot;//input[@value=&apos;Robo&apos;]&quot;));
+WebElement createdPetBobo = WDS.browser.findElement(By.xpath(&quot;//input[@value=&apos;Bobo&apos;]&quot;));
+//TBD: Catch the NoSuchElementException
+WDS.log.info(&quot;TC STEP: Was the pet2 created? &quot; + createdPetBobo.isEnabled());
+
+//TC: determine the TC result
+TCresult = createdPetRobo.isEnabled() &amp;&amp; createdPetBobo.isEnabled();
+WDS.log.info(&quot;TC RESULT: &quot; + TCresult.toString());
+
+WDS.sampleResult.successful = TCresult;
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">java</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="TC3 - View List" enabled="true">
+          <stringProp name="WebDriverSampler.script">import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+WDS.sampleResult.sampleStart();
+//TC result definition
+Boolean TCresult = false;
+//Loading the webpage
+WDS.browser.get(&quot;https://qa-petstore.herokuapp.com/&quot;);
+WebDriverWait wait = new WebDriverWait(WDS.browser, 5);
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(&quot;thead.thead-default&quot;)));
+//TBD: Catch the Exception on failed startup/loading
+
+WebElement petNameField = WDS.browser.findElement(By.className(&quot;pet-name&quot;));
+WebElement petStatusField = WDS.browser.findElement(By.className(&quot;pet-status&quot;));
+WebElement createPetBtn = WDS.browser.findElement(By.id(&quot;btn-create&quot;));
+//TBD: Catch the NoSuchElementException
+
+petNameField.click();
+petNameField.sendKeys(new String[]{&quot;Nono&quot;});
+petStatusField.click();
+petStatusField.sendKeys(new String[]{&quot;OUT&quot;});
+createPetBtn.click();
+Thread.sleep(500);
+WebElement createdPetName = WDS.browser.findElement(By.xpath(&quot;//input[@value=&apos;Nono&apos;]&quot;));
+WebElement createdPetStatus = WDS.browser.findElement(By.xpath(&quot;//input[@value=&apos;OUT&apos;]&quot;));
+//TBD: Catch the NoSuchElementException
+TCresult = createdPetName.isEnabled() &amp;&amp; createdPetStatus.isEnabled();
+WDS.log.info(&quot;TC RESULT: &quot; + TCresult.toString());
+
+WDS.sampleResult.successful = TCresult;
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">java</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="TC4 - Edit the pet" enabled="true">
+          <stringProp name="WebDriverSampler.script">import java.awt.Robot;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+WDS.sampleResult.sampleStart();
+Robot rob = new Robot();
+//TC result definition
+Boolean TCresult = false;
+//Loading the webpage
+WDS.browser.get(&quot;https://qa-petstore.herokuapp.com/&quot;);
+WebDriverWait wait = new WebDriverWait(WDS.browser, 5);
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(&quot;thead.thead-default&quot;)));
+//TBD: Catch the Exception on failed startup/loading
+
+WebElement petNameField = WDS.browser.findElement(By.className(&quot;pet-name&quot;));
+WebElement petStatusField = WDS.browser.findElement(By.className(&quot;pet-status&quot;));
+WebElement createPetBtn = WDS.browser.findElement(By.id(&quot;btn-create&quot;));
+//TBD: Catch the NoSuchElementException
+
+petNameField.click();
+petNameField.sendKeys(new String[]{&quot;Edita&quot;});
+petStatusField.click();
+petStatusField.sendKeys(new String[]{&quot;OUT&quot;});
+createPetBtn.click();
+Thread.sleep(100);
+WebElement createdPetName = WDS.browser.findElement(By.xpath(&quot;//span[text()=&apos;Edita&apos;]&quot;));
+WebElement createdPetStatus = WDS.browser.findElement(By.xpath(&quot;//span[text()=&apos;OUT&apos;]&quot;));
+createdPetName.click();
+Thread.sleep(100);
+WebElement petNameClickable = WDS.browser.findElement(By.xpath(&quot;//input[@value=&apos;Edita&apos;]&quot;));
+petNameClickable.clear();
+petNameClickable.sendKeys(new String[]{&quot;Edita the Lady&quot;});
+rob.keyPress(KeyEvent.VK_ENTER);
+rob.keyRelease(KeyEvent.VK_ENTER);
+Thread.sleep(100);
+
+WebElement createdPetStatus = WDS.browser.findElement(By.xpath(&quot;//span[text()=&apos;OUT&apos;]&quot;));
+createdPetStatus.click();
+Thread.sleep(100);
+WebElement petStatusClickable = WDS.browser.findElement(By.xpath(&quot;//input[@value=&apos;OUT&apos;]&quot;));
+petStatusClickable.sendKeys(new String[]{&quot; OF STOCK&quot;});
+rob.keyPress(KeyEvent.VK_ESCAPE);
+rob.keyRelease(KeyEvent.VK_ESCAPE);
+createdPetStatus = WDS.browser.findElement(By.xpath(&quot;//span[text()=&apos;OUT&apos;]&quot;));
+createdPetStatus.click();
+petStatusClickable.clear();
+Thread.sleep(100);
+petStatusClickable = WDS.browser.findElement(By.xpath(&quot;//input[@value=&apos;OUT&apos;]&quot;));
+petStatusClickable.sendKeys(new String[]{&quot;OUT OF STOCK&quot;});
+rob.mouseMove(petStatusClickable.getLocation().getX() - 5, petStatusClickable.getLocation().getY() - 200);
+rob.delay(200);
+rob.mousePress(InputEvent.BUTTON1_MASK);
+rob.mouseRelease(InputEvent.BUTTON1_MASK);
+Thread.sleep(100);
+petNameClickable = WDS.browser.findElement(By.xpath(&quot;//input[@value=&apos;Edita the Lady&apos;]&quot;));
+petStatusClickable = WDS.browser.findElement(By.xpath(&quot;//input[@value=&apos;OUT OF STOCK&apos;]&quot;));
+Thread.sleep(1000);
+
+//TC: determine the TC result
+TCresult = petNameClickable.isEnabled() &amp;&amp; petStatusClickable.isEnabled();
+WDS.log.info(&quot;TC RESULT: &quot; + TCresult.toString());
+
+WDS.sampleResult.successful = TCresult;
+WDS.sampleResult.sampleEnd();</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">java</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+    <WorkBench guiclass="WorkBenchGui" testclass="WorkBench" testname="WorkBench" enabled="true">
+      <boolProp name="WorkBench.save">true</boolProp>
+    </WorkBench>
+    <hashTree/>
+  </hashTree>
+</jmeterTestPlan>
